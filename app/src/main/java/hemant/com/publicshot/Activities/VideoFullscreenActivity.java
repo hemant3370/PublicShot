@@ -3,7 +3,6 @@ package hemant.com.publicshot.Activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 import hemant.com.publicshot.Constants;
 import hemant.com.publicshot.Model.FeedItem;
@@ -27,7 +26,7 @@ public class VideoFullscreenActivity extends AppCompatActivity {
 
         jcVideoPlayerStandard.setUp(Constants.MyUrl.BASE_URL + item.getMediaUrl()
                 , JCVideoPlayerStandard.SCREEN_WINDOW_FULLSCREEN, item.getName());
-//        jcVideoPlayerStandard.thumbImageView.setImage("http://p.qpic.cn/videoyun/0/2449_43b6f696980311e59ed467f22794e792_1/640");
+        jcVideoPlayerStandard.startVideo();
     }
 
     @Override
@@ -39,15 +38,15 @@ public class VideoFullscreenActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (JCVideoPlayer.backPress()) {
-            return;
-        }
+     JCVideoPlayerStandard.backPress();
         super.onBackPressed();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        JCVideoPlayer.releaseAllVideos();
+        JCVideoPlayerStandard.releaseAllVideos();
     }
+
+
 }
