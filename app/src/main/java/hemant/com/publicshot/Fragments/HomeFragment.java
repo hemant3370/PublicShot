@@ -124,7 +124,7 @@ public class HomeFragment extends Fragment   {
         floatingActionButton3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //TODO something when floating action menu third item clicked
-//                mListener.openUploadFragment(MediaType.AUDIO);
+                mListener.openUploadFragment(MediaType.AUDIO);
             }
         });
         mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager(),feed);

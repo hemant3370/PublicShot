@@ -22,6 +22,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 import hemant.com.publicshot.Activities.ImageDetailActivity;
 import hemant.com.publicshot.Activities.VideoFullscreenActivity;
@@ -36,6 +38,7 @@ import hemant.com.publicshot.Retrofit.Client.RestClient;
 import hemant.com.publicshot.Retrofit.Services.ApiInterface;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.Sort;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -53,16 +56,16 @@ public class MediaListFragment extends Fragment {
          * fragment.
          */
         private static final String ARG_ITEMS = "items";
-        private RecyclerView mRecyclerView;
+        @Bind(R.id.feed_recy)  RecyclerView mRecyclerView;
         private RecyclerView.Adapter mAdapter;
         public CustomClickListener listener;
         private String type;
-        private SwipeRefreshLayout swipeContainer;
-        List<FeedItem> items;
+        @Bind(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
+    private List<FeedItem> items;
         @Inject
         Retrofit mRetrofit;
-        ApiInterface apiInterface;
-        private Realm realm;
+    private Realm realm;
+        @Bind(R.id.slideView)   View slideView;
         private SlideUp slideUp;
 
     public MediaListFragment() {
@@ -85,19 +88,17 @@ public class MediaListFragment extends Fragment {
         public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             final View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
+            ButterKnife.bind(this,rootView);
             RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name(Realm.DEFAULT_REALM_NAME)
                     .schemaVersion(0)
                     .deleteRealmIfMigrationNeeded()
                     .build();
             realm = Realm.getInstance(realmConfiguration);
-            final View slideView = rootView.findViewById(R.id.slideView);
+
             slideUp = new SlideUp.Builder(slideView)
                     .withStartState(SlideUp.State.HIDDEN)
                     .withStartGravity(Gravity.BOTTOM)
                     .build();
-            // Lookup the swipe container view
-            swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
-            // Setup refresh listener which triggers new data loading
             swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -109,8 +110,6 @@ public class MediaListFragment extends Fragment {
                     android.R.color.holo_green_light,
                     android.R.color.holo_orange_light,
                     android.R.color.holo_red_light);
-
-            mRecyclerView = (RecyclerView) rootView.findViewById(R.id.feed_recy);
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
             mRecyclerView.setLayoutManager(mLayoutManager);
             mRecyclerView.setHasFixedSize(true);
@@ -146,6 +145,7 @@ public class MediaListFragment extends Fragment {
                                 slideUp.hide();
                             }
                         };
+                        slideView.findViewById(R.id.close_audio).setOnClickListener(listener);
                         jcVideoPlayerStandard.titleTextView.setOnClickListener(listener);
                         jcVideoPlayerStandard.backButton.setOnClickListener(listener);
                         jcVideoPlayerStandard.tinyBackImageView.setOnClickListener(listener);
@@ -165,7 +165,7 @@ public class MediaListFragment extends Fragment {
             if (mRetrofit == null){
                 mRetrofit = RestClient.getClient();
             }
-            apiInterface = mRetrofit.create(ApiInterface.class);
+            ApiInterface apiInterface = mRetrofit.create(ApiInterface.class);
             Call<FeedResponse> call = apiInterface.getFeed(Initializer.readFromPreferences(getContext(), Constants.SPKeys.authTokenKey,""));
             call.enqueue(new retrofit2.Callback<FeedResponse>() {
                 @Override
@@ -177,17 +177,21 @@ public class MediaListFragment extends Fragment {
                         realm.commitTransaction();
                         if (type != "") {
                             if (type == "uploads"){
-                                mAdapter = new FeedAdapter(getContext(), realm.copyFromRealm(realm.where(FeedItem.class).equalTo("userId.id",
-                                        Initializer.readFromPreferences(getContext(),Constants.SPKeys.userIDKey,"")).findAll()), listener);
+                                items =  realm.copyFromRealm(realm.where(FeedItem.class).equalTo("userId.id",
+                                        Initializer.readFromPreferences(getContext(),Constants.SPKeys.userIDKey,"")).findAll().sort("createdAt", Sort.DESCENDING));
+                                mAdapter = new FeedAdapter(getContext(),items, listener);
                             }
                             else {
-                                mAdapter = new FeedAdapter(getContext(), realm.copyFromRealm(realm.where(FeedItem.class).equalTo("type", type).findAll()), listener);
+                                items =  realm.copyFromRealm(realm.where(FeedItem.class).equalTo("type", type).findAll().sort("createdAt", Sort.DESCENDING));
+                                mAdapter = new FeedAdapter(getContext(),items, listener);
                             }
                         }
                         else {
-                            mAdapter = new FeedAdapter(getContext(), realm.copyFromRealm(realm.where(FeedItem.class).findAll()), listener);
+                            items =  realm.copyFromRealm(realm.where(FeedItem.class).findAll().sort("createdAt", Sort.DESCENDING));
+                            mAdapter = new FeedAdapter(getContext(), items, listener);
                         }
                         mRecyclerView.setAdapter(mAdapter);
+                        mRecyclerView.invalidate();
                         swipeContainer.setRefreshing(false);
                     }
                     else {

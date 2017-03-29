@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "751771555219",
+    "project_id": "publicshott-1490293634158"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:751771555219:android:91705aa0b5b9965d",
+        "android_client_info": {
+          "package_name": "hemant.com.publicshot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "751771555219-3vqr4g8qmlnqjp62jrkm02u15642uklm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "hemant.com.publicshot",
+            "certificate_hash": "e31b2cf3ee9eec939da0cbce947fddacd7681cd0"
+          }
+        },
+        {
+          "client_id": "751771555219-tusu4ch3ld4ud0gs5gpnosoda34rqseu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByn4XMz91Dc6m19WptRlekOfMrgYXsaa8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

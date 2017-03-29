@@ -8,6 +8,7 @@ import hemant.com.publicshot.Model.FeedItem;
 import hemant.com.publicshot.Model.FeedResponse;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.Sort;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -42,15 +43,15 @@ import io.realm.RealmConfiguration;
             case 1:
 //                        List<FeedItem> filteredvideoList= items.getData().stream().filter(article ->
 //                                article.getType().equals("video")).collect(Collectors.toList());
-                return MediaListFragment.newInstance(realm.copyFromRealm(realm.where(FeedItem.class).equalTo("type", "video").findAll()), "video");
+                return MediaListFragment.newInstance(realm.copyFromRealm(realm.where(FeedItem.class).equalTo("type", "video").findAll().sort("createdAt", Sort.DESCENDING)), "video");
             case 2:
 //                        List<FeedItem> filteredimageList= items.getData().stream().filter(article ->
 //                                article.getType().equals("image")).collect(Collectors.toList());
-                return MediaListFragment.newInstance(realm.copyFromRealm(realm.where(FeedItem.class).equalTo("type", "image").findAll()), "image");
+                return MediaListFragment.newInstance(realm.copyFromRealm(realm.where(FeedItem.class).equalTo("type", "image").findAll().sort("createdAt", Sort.DESCENDING)), "image");
             case 3:
 //                        List<FeedItem> filteredaudioList= items.getData().stream().filter(article ->
 //                                article.getType().equals("audio")).collect(Collectors.toList());
-                return MediaListFragment.newInstance(realm.copyFromRealm(realm.where(FeedItem.class).equalTo("type", "audio").findAll()), "audio");
+                return MediaListFragment.newInstance(realm.copyFromRealm(realm.where(FeedItem.class).equalTo("type", "audio").findAll().sort("createdAt", Sort.DESCENDING)), "audio");
         }
         return null;
     }

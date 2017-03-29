@@ -2,6 +2,7 @@ package hemant.com.publicshot.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,5 +27,8 @@ public class ImageDetailActivity extends AppCompatActivity {
         titleTextView.setText(getIntent().getStringExtra("title"));
         Glide.with(this).load(getIntent().getStringExtra("url")).crossFade()
                 .skipMemoryCache(false).diskCacheStrategy(DiskCacheStrategy.ALL).fitCenter().into(imageView);
+    }
+    public void closeImage(View view){
+        super.onBackPressed();
     }
 }

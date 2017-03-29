@@ -2,6 +2,7 @@ package hemant.com.publicshot.Activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 import hemant.com.publicshot.Constants;
@@ -27,6 +28,17 @@ public class VideoFullscreenActivity extends AppCompatActivity {
         jcVideoPlayerStandard.setUp(Constants.MyUrl.BASE_URL + item.getMediaUrl()
                 , JCVideoPlayerStandard.SCREEN_WINDOW_FULLSCREEN, item.getName());
         jcVideoPlayerStandard.startVideo();
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JCVideoPlayerStandard.releaseAllVideos();
+                JCVideoPlayerStandard.backPress();
+                VideoFullscreenActivity.super.onBackPressed();
+            }
+        };
+        jcVideoPlayerStandard.backButton.setOnClickListener(listener);
+        jcVideoPlayerStandard.tinyBackImageView.setOnClickListener(listener);
+        jcVideoPlayerStandard.titleTextView.setOnClickListener(listener);
     }
 
     @Override
