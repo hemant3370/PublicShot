@@ -17,11 +17,9 @@ import io.realm.Sort;
  public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     private final Realm realm;
-    FeedResponse items;
+    private FeedResponse items;
 
-
-
-    public SectionsPagerAdapter(FragmentManager fm, FeedResponse items) {
+    SectionsPagerAdapter(FragmentManager fm, FeedResponse items) {
         super(fm);
         this.items = items;
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name(Realm.DEFAULT_REALM_NAME)
@@ -41,16 +39,10 @@ import io.realm.Sort;
             case 0:
                 return MediaListFragment.newInstance(items.getData(), "");
             case 1:
-//                        List<FeedItem> filteredvideoList= items.getData().stream().filter(article ->
-//                                article.getType().equals("video")).collect(Collectors.toList());
                 return MediaListFragment.newInstance(realm.copyFromRealm(realm.where(FeedItem.class).equalTo("type", "video").findAll().sort("createdAt", Sort.DESCENDING)), "video");
             case 2:
-//                        List<FeedItem> filteredimageList= items.getData().stream().filter(article ->
-//                                article.getType().equals("image")).collect(Collectors.toList());
                 return MediaListFragment.newInstance(realm.copyFromRealm(realm.where(FeedItem.class).equalTo("type", "image").findAll().sort("createdAt", Sort.DESCENDING)), "image");
             case 3:
-//                        List<FeedItem> filteredaudioList= items.getData().stream().filter(article ->
-//                                article.getType().equals("audio")).collect(Collectors.toList());
                 return MediaListFragment.newInstance(realm.copyFromRealm(realm.where(FeedItem.class).equalTo("type", "audio").findAll().sort("createdAt", Sort.DESCENDING)), "audio");
         }
         return null;

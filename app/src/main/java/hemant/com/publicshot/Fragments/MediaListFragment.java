@@ -117,39 +117,41 @@ public class MediaListFragment extends Fragment {
                 @Override
                 public void onItemClick(View v, int position) {
                     FeedItem item = items.get(position);
-                    if (item.getType().equals("image")) {
-                        Intent mIntent = new Intent(getActivity(), ImageDetailActivity.class);
-                        mIntent.putExtra("title", item.getName());
-                        mIntent.putExtra("url", Constants.MyUrl.BASE_URL + item.getMediaUrl());
-                        Pair<View, String> p1 = Pair.create(v.findViewById(R.id.feedIV), "media");
-                        Pair<View, String> p2 = Pair.create(v.findViewById(R.id.feed_title), "title");
-                        ActivityOptionsCompat options = ActivityOptionsCompat.
-                                makeSceneTransitionAnimation(getActivity(), p1, p2);
-                        startActivity(mIntent,options.toBundle());
-                    }
-                    else if(item.getType().equals("video")) {
-                        Intent video = new Intent(getActivity(),VideoFullscreenActivity.class);
-                        video.putExtra("video",item);
-                        startActivity(video);
-                    }
-                    else {
-                        final JCVideoPlayerStandard jcVideoPlayerStandard = (JCVideoPlayerStandard) slideView.findViewById(R.id.videoplayer);
-                        jcVideoPlayerStandard.setUp(Constants.MyUrl.BASE_URL + item.getMediaUrl()
-                                , JCVideoPlayerStandard.SCREEN_WINDOW_FULLSCREEN, item.getName());
-                        jcVideoPlayerStandard.startVideo();
-                        View.OnClickListener listener = new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                JCVideoPlayerStandard.releaseAllVideos();
-                                JCVideoPlayerStandard.backPress();
-                                slideUp.hide();
-                            }
-                        };
-                        slideView.findViewById(R.id.close_audio).setOnClickListener(listener);
-                        jcVideoPlayerStandard.titleTextView.setOnClickListener(listener);
-                        jcVideoPlayerStandard.backButton.setOnClickListener(listener);
-                        jcVideoPlayerStandard.tinyBackImageView.setOnClickListener(listener);
-                        slideUp.show();
+                    switch (item.getType()) {
+                        case "image":
+                            Intent mIntent = new Intent(getActivity(), ImageDetailActivity.class);
+                            mIntent.putExtra("title", item.getName());
+                            mIntent.putExtra("url", Constants.MyUrl.BASE_URL + item.getMediaUrl());
+                            Pair<View, String> p1 = Pair.create(v.findViewById(R.id.feedIV), "media");
+                            Pair<View, String> p2 = Pair.create(v.findViewById(R.id.feed_title), "title");
+                            ActivityOptionsCompat options = ActivityOptionsCompat.
+                                    makeSceneTransitionAnimation(getActivity(), p1, p2);
+                            startActivity(mIntent, options.toBundle());
+                            break;
+                        case "video":
+                            Intent video = new Intent(getActivity(), VideoFullscreenActivity.class);
+                            video.putExtra("video", item);
+                            startActivity(video);
+                            break;
+                        default:
+                            final JCVideoPlayerStandard jcVideoPlayerStandard = (JCVideoPlayerStandard) slideView.findViewById(R.id.videoplayer);
+                            jcVideoPlayerStandard.setUp(Constants.MyUrl.BASE_URL + item.getMediaUrl()
+                                    , JCVideoPlayerStandard.SCREEN_WINDOW_FULLSCREEN, item.getName());
+                            jcVideoPlayerStandard.startVideo();
+                            View.OnClickListener listener = new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    JCVideoPlayerStandard.releaseAllVideos();
+                                    JCVideoPlayerStandard.backPress();
+                                    slideUp.hide();
+                                }
+                            };
+                            slideView.findViewById(R.id.close_audio).setOnClickListener(listener);
+                            jcVideoPlayerStandard.titleTextView.setOnClickListener(listener);
+                            jcVideoPlayerStandard.backButton.setOnClickListener(listener);
+                            jcVideoPlayerStandard.tinyBackImageView.setOnClickListener(listener);
+                            slideUp.show();
+                            break;
                     }
                 }
             };
@@ -175,8 +177,8 @@ public class MediaListFragment extends Fragment {
                         realm.beginTransaction();
                         realm.copyToRealmOrUpdate(response.body().getData());
                         realm.commitTransaction();
-                        if (type != "") {
-                            if (type == "uploads"){
+                        if (!type.equals("")) {
+                            if (type.equals("uploads")){
                                 items =  realm.copyFromRealm(realm.where(FeedItem.class).equalTo("userId.id",
                                         Initializer.readFromPreferences(getContext(),Constants.SPKeys.userIDKey,"")).findAll().sort("createdAt", Sort.DESCENDING));
                                 mAdapter = new FeedAdapter(getContext(),items, listener);

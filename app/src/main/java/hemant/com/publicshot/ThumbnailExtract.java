@@ -20,13 +20,12 @@ import java.util.HashMap;
 
 public class ThumbnailExtract extends AsyncTask<String, Integer, Bitmap> {
 
-    private final String videoUrl;
     private final ImageView mThumbnail;
     private Bitmap mDefaultBitmap;
 
 
     public ThumbnailExtract(String videoLocalUrl, ImageView thumbnail, Bitmap defaultBitmap) {
-        this.videoUrl = videoLocalUrl;
+        String videoUrl = videoLocalUrl;
         mThumbnail = thumbnail;
         mDefaultBitmap = defaultBitmap;
     }
