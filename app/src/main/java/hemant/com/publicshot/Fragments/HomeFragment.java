@@ -98,7 +98,6 @@ public class HomeFragment extends Fragment   {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         ((Initializer) getActivity().getApplication()).getNetComponent().inject(this);
-
         ViewPager mViewPager = (ViewPager) rootView.findViewById(R.id.container);
         TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);

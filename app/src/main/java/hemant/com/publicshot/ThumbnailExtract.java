@@ -23,7 +23,6 @@ public class ThumbnailExtract extends AsyncTask<String, Integer, Bitmap> {
     private final ImageView mThumbnail;
     private Bitmap mDefaultBitmap;
 
-
     public ThumbnailExtract(String videoLocalUrl, ImageView thumbnail, Bitmap defaultBitmap) {
         String videoUrl = videoLocalUrl;
         mThumbnail = thumbnail;

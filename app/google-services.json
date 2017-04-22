@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "751771555219",
-    "project_id": "publicshott-1490293634158"
+    "firebase_url": "https://publicshott-1490293634158.firebaseio.com",
+    "project_id": "publicshott-1490293634158",
+    "storage_bucket": "publicshott-1490293634158.appspot.com"
   },
   "client": [
     {
@@ -12,6 +14,10 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "751771555219-o9tjiqb9f759c4rr4l2om8slopjao6u7.apps.googleusercontent.com",
+          "client_type": 3
+        },
         {
           "client_id": "751771555219-3vqr4g8qmlnqjp62jrkm02u15642uklm.apps.googleusercontent.com",
           "client_type": 1,
@@ -35,11 +41,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "751771555219-o9tjiqb9f759c4rr4l2om8slopjao6u7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

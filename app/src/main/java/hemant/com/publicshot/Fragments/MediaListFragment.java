@@ -9,13 +9,10 @@ import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
-import com.mancj.slideup.SlideUp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +21,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 import hemant.com.publicshot.Activities.ImageDetailActivity;
-import hemant.com.publicshot.Activities.VideoFullscreenActivity;
 import hemant.com.publicshot.Adapter.FeedAdapter;
 import hemant.com.publicshot.Applications.Initializer;
 import hemant.com.publicshot.Constants;
@@ -65,8 +60,7 @@ public class MediaListFragment extends Fragment {
         @Inject
         Retrofit mRetrofit;
     private Realm realm;
-        @Bind(R.id.slideView)   View slideView;
-        private SlideUp slideUp;
+
 
     public MediaListFragment() {
         }
@@ -94,11 +88,6 @@ public class MediaListFragment extends Fragment {
                     .deleteRealmIfMigrationNeeded()
                     .build();
             realm = Realm.getInstance(realmConfiguration);
-
-            slideUp = new SlideUp.Builder(slideView)
-                    .withStartState(SlideUp.State.HIDDEN)
-                    .withStartGravity(Gravity.BOTTOM)
-                    .build();
             swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -117,42 +106,41 @@ public class MediaListFragment extends Fragment {
                 @Override
                 public void onItemClick(View v, int position) {
                     FeedItem item = items.get(position);
-                    switch (item.getType()) {
-                        case "image":
+//                    switch (item.getType()) {
+//                        case "image":
                             Intent mIntent = new Intent(getActivity(), ImageDetailActivity.class);
-                            mIntent.putExtra("title", item.getName());
-                            mIntent.putExtra("url", Constants.MyUrl.BASE_URL + item.getMediaUrl());
+                            mIntent.putExtra("item", item);
                             Pair<View, String> p1 = Pair.create(v.findViewById(R.id.feedIV), "media");
-                            Pair<View, String> p2 = Pair.create(v.findViewById(R.id.feed_title), "title");
+//                            Pair<View, String> p2 = Pair.create(v.findViewById(R.id.feed_title), "title");
                             ActivityOptionsCompat options = ActivityOptionsCompat.
-                                    makeSceneTransitionAnimation(getActivity(), p1, p2);
+                                    makeSceneTransitionAnimation(getActivity(), p1);
                             startActivity(mIntent, options.toBundle());
-                            break;
-                        case "video":
-                            Intent video = new Intent(getActivity(), VideoFullscreenActivity.class);
-                            video.putExtra("video", item);
-                            startActivity(video);
-                            break;
-                        default:
-                            final JCVideoPlayerStandard jcVideoPlayerStandard = (JCVideoPlayerStandard) slideView.findViewById(R.id.videoplayer);
-                            jcVideoPlayerStandard.setUp(Constants.MyUrl.BASE_URL + item.getMediaUrl()
-                                    , JCVideoPlayerStandard.SCREEN_WINDOW_FULLSCREEN, item.getName());
-                            jcVideoPlayerStandard.startVideo();
-                            View.OnClickListener listener = new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    JCVideoPlayerStandard.releaseAllVideos();
-                                    JCVideoPlayerStandard.backPress();
-                                    slideUp.hide();
-                                }
-                            };
-                            slideView.findViewById(R.id.close_audio).setOnClickListener(listener);
-                            jcVideoPlayerStandard.titleTextView.setOnClickListener(listener);
-                            jcVideoPlayerStandard.backButton.setOnClickListener(listener);
-                            jcVideoPlayerStandard.tinyBackImageView.setOnClickListener(listener);
-                            slideUp.show();
-                            break;
-                    }
+//                            break;
+//                        case "video":
+//                            Intent video = new Intent(getActivity(), VideoFullscreenActivity.class);
+//                            video.putExtra("video", item);
+//                            startActivity(video);
+//                            break;
+//                        default:
+//                            final JCVideoPlayerStandard jcVideoPlayerStandard = (JCVideoPlayerStandard) slideView.findViewById(R.id.videoplayer);
+//                            jcVideoPlayerStandard.setUp(Constants.MyUrl.BASE_URL + item.getMediaUrl()
+//                                    , JCVideoPlayerStandard.SCREEN_WINDOW_FULLSCREEN, item.getName());
+//                            jcVideoPlayerStandard.startVideo();
+//                            View.OnClickListener listener = new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View v) {
+//                                    JCVideoPlayerStandard.releaseAllVideos();
+//                                    JCVideoPlayerStandard.backPress();
+//                                    slideUp.hide();
+//                                }
+//                            };
+//                            slideView.findViewById(R.id.close_audio).setOnClickListener(listener);
+//                            jcVideoPlayerStandard.titleTextView.setOnClickListener(listener);
+//                            jcVideoPlayerStandard.backButton.setOnClickListener(listener);
+//                            jcVideoPlayerStandard.tinyBackImageView.setOnClickListener(listener);
+//                            slideUp.show();
+//                            break;
+//                    }
                 }
             };
             items = getArguments().getParcelableArrayList(ARG_ITEMS);

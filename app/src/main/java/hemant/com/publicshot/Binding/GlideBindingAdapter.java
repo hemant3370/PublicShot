@@ -5,6 +5,7 @@ import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import hemant.com.publicshot.R;
 
@@ -16,6 +17,10 @@ public class GlideBindingAdapter {
     @BindingAdapter({"bind:image_url"})
     public static void loadImage(ImageView imageView, String url)
     {
-        Glide.with(imageView.getContext()).load(url).placeholder(ContextCompat.getDrawable(imageView.getContext(), R.drawable.com_facebook_profile_picture_blank_square)).fitCenter().into(imageView);
+        Glide.with(imageView.getContext()).load(url).skipMemoryCache(false)
+                .diskCacheStrategy(DiskCacheStrategy.ALL).crossFade()
+                .placeholder(ContextCompat.getDrawable(imageView.getContext(), R.drawable.com_facebook_profile_picture_blank_square))
+                .error(ContextCompat.getDrawable(imageView.getContext(), R.drawable.com_facebook_profile_picture_blank_square))
+                .fitCenter().into(imageView);
     }
 }

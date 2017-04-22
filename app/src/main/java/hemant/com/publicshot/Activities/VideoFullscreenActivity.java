@@ -46,8 +46,6 @@ public class VideoFullscreenActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
     }
 
-
-
     @Override
     public void onBackPressed() {
      JCVideoPlayerStandard.backPress();
@@ -59,6 +57,5 @@ public class VideoFullscreenActivity extends AppCompatActivity {
         super.onPause();
         JCVideoPlayerStandard.releaseAllVideos();
     }
-
 
 }
