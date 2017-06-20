@@ -1,4 +1,4 @@
-package hemant.com.publicshot.Transformer;
+package publicshot.com.publicshot.Transformer;
 
 import android.view.View;
 

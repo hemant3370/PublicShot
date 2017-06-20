@@ -1,4 +1,4 @@
-package hemant.com.publicshot.Fragments;
+package publicshot.com.publicshot.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,41 +9,21 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
-import javax.inject.Inject;
+import publicshot.com.publicshot.Applications.Initializer;
+import publicshot.com.publicshot.Enums.MediaType;
+import publicshot.com.publicshot.Model.FeedResponse;
+import publicshot.com.publicshot.R;
+import publicshot.com.publicshot.Transformer.ForegroundToBackgroundTransformer;
 
-import hemant.com.publicshot.Applications.Initializer;
-import hemant.com.publicshot.Constants;
-import hemant.com.publicshot.Enums.MediaType;
-import hemant.com.publicshot.Model.FeedResponse;
-import hemant.com.publicshot.R;
-import hemant.com.publicshot.Retrofit.Client.RestClient;
-import hemant.com.publicshot.Retrofit.Services.ApiInterface;
-import hemant.com.publicshot.Transformer.ForegroundToBackgroundTransformer;
-import retrofit2.Call;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link HomeFragment.OnFABInteractionListener} interface
- * to handle interaction events.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class HomeFragment extends Fragment   {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    @Inject
-    Retrofit mRetrofit;
-    ApiInterface apiInterface;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -64,24 +44,6 @@ public class HomeFragment extends Fragment   {
 
     public HomeFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(FeedResponse param1) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putParcelable(ARG_PARAM1, param1);
-
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -134,36 +96,6 @@ public class HomeFragment extends Fragment   {
         return rootView;
     }
 
-    private void getFeeds() {
-
-        if (mRetrofit == null){
-            mRetrofit = RestClient.getClient();
-        }
-        apiInterface = mRetrofit.create(ApiInterface.class);
-        Call<FeedResponse> call = apiInterface.getFeed(Initializer.readFromPreferences(getContext(), Constants.SPKeys.authTokenKey,""));
-        call.enqueue(new retrofit2.Callback<FeedResponse>() {
-            @Override
-            public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
-
-                if (response.code() == 200 ){
-                    feed = response.body();
-                    mSectionsPagerAdapter.notifyDataSetChanged();
-                }
-                else {
-
-                    Toast.makeText(getActivity(),String.valueOf(response.raw().message()),Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<FeedResponse> call, Throwable t) {
-
-                Toast.makeText(getActivity(),t.getLocalizedMessage(),Toast.LENGTH_LONG).show();
-            }
-        });
-
-}
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -180,17 +112,6 @@ public class HomeFragment extends Fragment   {
         super.onDetach();
         mListener = null;
     }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFABInteractionListener {
         // TODO: Update argument type and name
         void openUploadFragment(MediaType type);

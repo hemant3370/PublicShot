@@ -1,4 +1,4 @@
-package hemant.com.publicshot.Retrofit;
+package publicshot.com.publicshot.Retrofit;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -34,7 +34,7 @@ public class ProgressRequestBody extends RequestBody {
         mFile = file;
         mListener = listener;
     }
-    public static final String MULTIPART_FORM_DATA = "multipart/form-data";
+    private static final String MULTIPART_FORM_DATA = "multipart/form-data";
 
     @NonNull
     private RequestBody createPartFromString(String descriptionString) {
@@ -93,7 +93,7 @@ public class ProgressRequestBody extends RequestBody {
     private class ProgressUpdater implements Runnable {
         private long mUploaded;
         private long mTotal;
-        public ProgressUpdater(long uploaded, long total) {
+        ProgressUpdater(long uploaded, long total) {
             mUploaded = uploaded;
             mTotal = total;
         }
