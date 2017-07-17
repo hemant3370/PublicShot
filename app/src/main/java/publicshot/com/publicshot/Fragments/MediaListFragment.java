@@ -20,6 +20,11 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import publicshot.com.publicshot.Activities.ImageDetailActivity;
 import publicshot.com.publicshot.Adapter.FeedAdapter;
 import publicshot.com.publicshot.Applications.Initializer;
@@ -29,11 +34,7 @@ import publicshot.com.publicshot.Model.FeedItem;
 import publicshot.com.publicshot.Model.FeedResponse;
 import publicshot.com.publicshot.R;
 import publicshot.com.publicshot.Retrofit.Client.RestClient;
-import publicshot.com.publicshot.Retrofit.Loader.RetrofitLoader;
 import publicshot.com.publicshot.Retrofit.Services.ApiInterface;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static android.support.v7.widget.RecyclerView.Adapter;
@@ -49,12 +50,13 @@ public class MediaListFragment extends Fragment {
         public CustomClickListener listener;
         private String type;
         @Bind(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
-
+    private CompositeDisposable compositeDisposable =
+            new CompositeDisposable();
         private List<FeedItem> items = new ArrayList<>();
         @Inject
         Retrofit mRetrofit;
     LinearLayoutManager mLayoutManager;
-    Call<FeedResponse> call;
+
     static final int PAGE_SIZE = 20 ;
     private OnScrollListener recyclerViewOnScrollListener = new OnScrollListener() {
 
@@ -139,65 +141,148 @@ public class MediaListFragment extends Fragment {
             }
             int page = items.size() / PAGE_SIZE;
             ApiInterface apiInterface = mRetrofit.create(ApiInterface.class);
-            int loaderID = 0;
             switch (type) {
                 case "news":
-                    loaderID = 1111;
-                    call = apiInterface.getFeed(Initializer.readFromPreferences(getContext(), Constants.SPKeys.authTokenKey, ""), type, Integer.toString(page));
+
+                apiInterface.getFeed(Initializer.readFromPreferences(getContext(), Constants.SPKeys.authTokenKey, ""), type, Integer.toString(page))
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<FeedResponse>() {
+                                @Override
+                                public void onSubscribe(Disposable disposable) {
+                                    compositeDisposable.add(disposable);
+                                }
+
+                                @Override
+                                public void onNext(FeedResponse response) {
+                                    if (response != null){
+                                        items.addAll(response.getData());
+                                        mAdapter.notifyDataSetChanged();
+                                        swipeContainer.setRefreshing(false);
+                                    }
+                                    if (swipeContainer != null) { swipeContainer.setRefreshing(false); }
+                                }
+
+                                @Override
+                                public void onError(Throwable throwable) {
+                                    if (swipeContainer != null) { swipeContainer.setRefreshing(false); }
+                                    Toast.makeText(getContext(), throwable.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                    if (swipeContainer != null) { swipeContainer.setRefreshing(false); }
+                                }
+                            });
+
                     break;
                 case "uploads":
-                    loaderID = 2222;
-                    call = apiInterface.myUploads(Initializer.readFromPreferences(getContext(), Constants.SPKeys.authTokenKey, ""), Integer.toString(page));
+
+                   apiInterface.myUploads(Initializer.readFromPreferences(getContext(), Constants.SPKeys.authTokenKey, ""), Integer.toString(page))
+                           .subscribeOn(Schedulers.newThread())
+                           .observeOn(AndroidSchedulers.mainThread())
+                           .subscribe(new Observer<FeedResponse>() {
+                               @Override
+                               public void onSubscribe(Disposable disposable) {
+                                   compositeDisposable.add(disposable);
+                               }
+
+                               @Override
+                               public void onNext(FeedResponse response) {
+                                   if (response != null){
+                                       items.addAll(response.getData());
+                                       mAdapter.notifyDataSetChanged();
+                                       swipeContainer.setRefreshing(false);
+                                   }
+                                   if (swipeContainer != null) { swipeContainer.setRefreshing(false); }
+                               }
+
+                               @Override
+                               public void onError(Throwable throwable) {
+                                   if (swipeContainer != null) { swipeContainer.setRefreshing(false); }
+                                   Toast.makeText(getContext(), throwable.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
+
+                               }
+
+                               @Override
+                               public void onComplete() {
+                                   if (swipeContainer != null) { swipeContainer.setRefreshing(false); }
+                               }
+                           });
+
                     break;
                 case "audio": case"video": case "image":
-                    loaderID = type.hashCode();
-                    call = apiInterface.get(Initializer.readFromPreferences(getContext(), Constants.SPKeys.authTokenKey, ""), type, Integer.toString(page));
+
+                    apiInterface.get(Initializer.readFromPreferences(getContext(), Constants.SPKeys.authTokenKey, ""), type, Integer.toString(page))
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<FeedResponse>() {
+                                @Override
+                                public void onSubscribe(Disposable disposable) {
+                                    compositeDisposable.add(disposable);
+                                }
+
+                                @Override
+                                public void onNext(FeedResponse response) {
+                                    if (response != null){
+                                        items.addAll(response.getData());
+                                        mAdapter.notifyDataSetChanged();
+                                        swipeContainer.setRefreshing(false);
+                                    }
+                                    if (swipeContainer != null) { swipeContainer.setRefreshing(false); }
+                                }
+
+                                @Override
+                                public void onError(Throwable throwable) {
+                                    if (swipeContainer != null) { swipeContainer.setRefreshing(false); }
+                                    Toast.makeText(getContext(), throwable.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                    if (swipeContainer != null) { swipeContainer.setRefreshing(false); }
+                                }
+                            });
+
                     break;
                  default:
-                     loaderID = type.hashCode();
-                     call = apiInterface.search(Initializer.readFromPreferences(getContext(), Constants.SPKeys.authTokenKey, ""),type,Integer.toString(page));
+
+                     apiInterface.search(Initializer.readFromPreferences(getContext(), Constants.SPKeys.authTokenKey, ""),type,Integer.toString(page))
+                             .subscribeOn(Schedulers.newThread())
+                             .observeOn(AndroidSchedulers.mainThread())
+                             .subscribe(new Observer<FeedResponse>() {
+                                 @Override
+                                 public void onSubscribe(Disposable disposable) {
+                                     compositeDisposable.add(disposable);
+                                 }
+
+                                 @Override
+                                 public void onNext(FeedResponse response) {
+                                     if (response != null){
+                                         items.addAll(response.getData());
+                                         mAdapter.notifyDataSetChanged();
+                                         swipeContainer.setRefreshing(false);
+                                     }
+                                     if (swipeContainer != null) { swipeContainer.setRefreshing(false); }
+                                 }
+
+                                 @Override
+                                 public void onError(Throwable throwable) {
+                                     if (swipeContainer != null) { swipeContainer.setRefreshing(false); }
+                                     Toast.makeText(getContext(), throwable.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
+
+                                 }
+
+                                 @Override
+                                 public void onComplete() {
+                                     if (swipeContainer != null) { swipeContainer.setRefreshing(false); }
+                                 }
+                             });
+
                      break;
             }
-//            call.enqueue(new Callback<FeedResponse>() {
-//                @Override
-//                public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
-//                    if (response.code() == 200 ){
-//                        items.addAll(response.body().getData());
-//                        mAdapter.notifyDataSetChanged();
-//                        swipeContainer.setRefreshing(false);
-//                    }
-//                    else {
-//                        swipeContainer.setRefreshing(false);
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<FeedResponse> call, Throwable t) {
-//                    swipeContainer.setRefreshing(false);
-//                }
-//            });
-            RetrofitLoader.load(mRecyclerView.getContext(), getActivity().getLoaderManager(), loaderID, call, new Callback<FeedResponse>() {
-                @Override
-                public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
-                    if (response.code() == 200 ){
-                                items.addAll(response.body().getData());
-                                mAdapter.notifyDataSetChanged();
-                        swipeContainer.setRefreshing(false);
-                    }
-                    else if (response.code() == 403){
-                        Toast.makeText(getContext(),"Please Login again",Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toast.makeText(getContext(),"Error " + response.message(),Toast.LENGTH_SHORT).show();
-                        if (swipeContainer != null) { swipeContainer.setRefreshing(false); }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<FeedResponse> call, Throwable t) {
-                    if (swipeContainer != null) { swipeContainer.setRefreshing(false); }
-                }
-            });
 
         }
 
@@ -207,7 +292,7 @@ public class MediaListFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        call.cancel();
+        compositeDisposable.dispose();
         removeListeners();
         ButterKnife.unbind(this);
     }
