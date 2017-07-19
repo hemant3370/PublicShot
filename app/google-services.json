@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "763719792615-g1adhmj9n84brvjlo62pl1tcigvdug3n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "publicshot.com.publicshot",
+            "certificate_hash": "e31b2cf3ee9eec939da0cbce947fddacd7681cd0"
+          }
+        },
+        {
           "client_id": "763719792615-k90874ueio9q83hn5cg9r6erdk0t7tbb.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
