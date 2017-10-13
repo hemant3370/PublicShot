@@ -7,7 +7,7 @@ import android.view.View;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
+import cn.jzvd.JZVideoPlayerStandard;
 import publicshot.com.publicshot.Constants;
 import publicshot.com.publicshot.Model.FeedItem;
 import publicshot.com.publicshot.databinding.ActivityImageDetailBinding;
@@ -29,12 +29,12 @@ public class ImageDetailActivity extends AppCompatActivity {
             binding.imageView.setVisibility(View.GONE);
             binding.videoplayer.setVisibility(View.VISIBLE);
             binding.videoplayer.setUp(Constants.MyUrl.BASE_URL + thisItem.getMediaUrl()
-                    , JCVideoPlayerStandard.SCREEN_LAYOUT_NORMAL, thisItem.getName());
+                    , JZVideoPlayerStandard.SCREEN_LAYOUT_NORMAL, thisItem.getName());
             View.OnClickListener listener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    JCVideoPlayerStandard.releaseAllVideos();
-                    JCVideoPlayerStandard.backPress();
+                    JZVideoPlayerStandard.releaseAllVideos();
+                    JZVideoPlayerStandard.backPress();
                     ImageDetailActivity.super.onBackPressed();
                 }
             };
@@ -49,14 +49,14 @@ public class ImageDetailActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        JCVideoPlayerStandard.backPress();
+        JZVideoPlayerStandard.backPress();
         super.onBackPressed();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        JCVideoPlayerStandard.releaseAllVideos();
+        JZVideoPlayerStandard.releaseAllVideos();
     }
 
 }
